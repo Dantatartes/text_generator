@@ -3,15 +3,14 @@ from numpy.random import randint, choice
 
 
 class TextGenerator:
-    word_dict = {}
-    m = []
 
     def __init__(self):
+        self.word_dict = {}
         pass
 
     def fit(self, raw_text):
-        self.m = make_lowercase(tokenize(raw_text))
-        for word, next_word in zip(self.m, self.m[1:]):
+        m = make_lowercase(tokenize(raw_text))
+        for word, next_word in zip(m, m[1:]):
             if word not in self.word_dict.keys():
                 self.word_dict[word] = [next_word]
             else:
@@ -19,15 +18,15 @@ class TextGenerator:
 
     def generate(self, size=randint(7, 14)):
         try:
-            current_word = choice(self.word_dict.keys())
+            current_word = choice(list(self.word_dict.keys()))
+            sentence = f"{current_word} "
+            for i in range(size):
+                new_word = choice(self.word_dict[current_word])
+                sentence = f"{sentence}{new_word} "
+                current_word = new_word
+            return sentence
         except ValueError:
-            return ""
-        sentence = f"{current_word} "
-        for i in range(size):
-            new_word = choice(self.word_dict[current_word])
-            sentence = f"{sentence}{new_word} "
-            current_word = new_word
-        return sentence
+            print("You haven't fitted the data to TextGenerator or it was an empty string")
 
 
 # Избавление от неалфавитных знаков, сплит их в лист
